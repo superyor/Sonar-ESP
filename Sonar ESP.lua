@@ -33,8 +33,17 @@ local SOUND = gui.Combobox(GROUP, "lbot.sonar.enabled", "Sound", "Button 17", "B
 local DISTANCE = gui.Slider(GROUP, "lbot.sonar.distance", "Distance", 200, 100, 1000, 50)
 local FOV = gui.Slider(GROUP, "lbot.sonar.fov", "FOV", 180, 1, 180, 1)
 local FOV_ROTATION = gui.Slider(GROUP, "lbot.sonar.fov", "FOV rotation", 180, 0, 360, 1)
-local DISTANCEBASED = gui.Checkbox(GROUP, "lbot.sonar.distancebased", "Distancebased Beep speed", false)
+local DISTANCEBASED = gui.Checkbox(GROUP, "lbot.sonar.distancebased", "Distancebased Beep frequency", false)
 local VISUALIZE_FOV = gui.Checkbox(GROUP, "lbot.sonar.visualize", "Visualize FOV", false)
+
+--- Descriptions
+ENABLE:SetDescription("Enables Sonar ESP.")
+SOUND:SetDescription("Select which sound should be played.")
+DISTANCE:SetDescription("Distance of the FOV.")
+FOV:SetDescription("Field of view of the sonar.")
+FOV_ROTATION:SetDescription("Rotation of the FOV.")
+DISTANCEBASED:SetDescription("Play sound more frequently when enemies are near.")
+VISUALIZE_FOV:SetDescription("Visualize the FOV.")
 
 --- Variables
 local lastBeep = 0
