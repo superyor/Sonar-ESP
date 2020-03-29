@@ -148,7 +148,9 @@ local function hkDraw()
                                 enemiesInRange = enemiesInRange + 1
                             end
                         end
-                        closestDistance = originDelta;
+                        if originDelta < closestDistance then
+                            closestDistance = originDelta;
+                        end
                     end
                 end
             end
