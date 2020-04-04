@@ -29,20 +29,24 @@ you a DONKEY dick. Fix the problem yourself. A non-dick would submit the fix bac
 
 local GROUP = gui.Groupbox(gui.Reference("Legitbot", "Other"), "Sonar ESP", 15, 250, 297, 300)
 local ENABLE = gui.Checkbox(GROUP, "lbot.sonar.enabled", "Enable", false)
+local VOLUME = gui.Slider(GROUP, "lbot.sonar.volume", "Volume", 50, 1, 100, 1)
 local SOUND = gui.Combobox(GROUP, "lbot.sonar.enabled", "Sound", "Button 17", "Button 15", "Blip 1", "Blip 2", "Bell", "Button 10")
-local DISTANCE = gui.Slider(GROUP, "lbot.sonar.distance", "Distance", 200, 100, 1000, 50)
+local DISTANCE = gui.Slider(GROUP, "lbot.sonar.distance", "Distance", 200, 100, 1500, 50)
 local FOV = gui.Slider(GROUP, "lbot.sonar.fov", "FOV", 180, 1, 180, 1)
 local FOV_ROTATION = gui.Slider(GROUP, "lbot.sonar.fov", "FOV rotation", 180, 0, 360, 1)
-local DISTANCEBASED = gui.Checkbox(GROUP, "lbot.sonar.distancebased", "Distancebased Beep frequency", false)
+local DISTANCEBASED = gui.Checkbox(GROUP, "lbot.sonar.distancebasedfreq", "Distancebased Beep frequency", false)
+local DISTANCEBASED_VOLUME = gui.Checkbox(GROUP, "lbot.sonar.distancebasedvol", "Distancebased Beep frequency", false)
 local VISUALIZE_FOV = gui.Checkbox(GROUP, "lbot.sonar.visualize", "Visualize FOV", false)
 
 --- Descriptions
 ENABLE:SetDescription("Enables Sonar ESP.")
 SOUND:SetDescription("Select which sound should be played.")
+VOLUME:SetDescription("Master volume of the sound.")
 DISTANCE:SetDescription("Distance of the FOV.")
 FOV:SetDescription("Field of view of the sonar.")
 FOV_ROTATION:SetDescription("Rotation of the FOV.")
 DISTANCEBASED:SetDescription("Play sound more frequently when enemies are near.")
+DISTANCEBASED_VOLUME:SetDescription("Play sound louder when enemies are near.")
 VISUALIZE_FOV:SetDescription("Visualize the FOV.")
 
 --- Variables
@@ -166,12 +170,19 @@ local function hkDraw()
         end
 
         if DISTANCEBASED:GetValue() then
-            replayGap = 0.1 + ((0.8) * (closestDistance / 1000));
+            replayGap = 0.1 + ((0.8) * (closestDistance / 1500));
         end
 
         if enemiesInRange > 0 and lastBeep < globals.RealTime() - replayGap then
-            client.Command("play buttons/" .. sounds[SOUND:GetValue()+1], true)
-            lastBeep = globals.RealTime();
+            local button = sounds[SOUND:GetValue()+1]
+            local vol = VOLUME:GetValue() / 100
+
+            if DISTANCEBASED_VOLUME:GetValue() then
+                vol = (1 - (closestDistance / 1500)) * vol
+            end
+
+            client.Command("playvol buttons/".. button .. " " .. vol, true)
+            lastBeep =  globals.RealTime()
         end
 
         if VISUALIZE_FOV:GetValue() then
